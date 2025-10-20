@@ -47,10 +47,16 @@ export class PhotoService {
 
   // Captura la foto y ubicación
   async addNewToGallery() {
+    try {
+    // Detectar si está en entorno web o nativo
+    const isWeb = !('Capacitor' in window) || (window as any).Capacitor.getPlatform() === 'web';
+
     const capturedPhoto = await Camera.getPhoto({
       resultType: CameraResultType.Uri,
-      source: CameraSource.Camera,
-      quality: 90
+      // Si está en navegador → usa Prompt (para elegir cámara o archivo)
+      // Si está en dispositivo → usa la cámara directamente
+      source: isWeb ? CameraSource.Prompt : CameraSource.Camera,
+      quality: 90,
     });
 
     const savedImageFile = await this.savePicture(capturedPhoto);
@@ -85,7 +91,10 @@ export class PhotoService {
       encoding: Encoding.UTF8,
     });
 
-    console.log('Foto y ubicación guardadas correctamente');
+    console.log('✅ Foto y ubicación guardadas correctamente');
+  } catch (error) {
+    console.error('❌ Error al tomar la foto:', error);
+  }
   }
 
   async loadSaved() {

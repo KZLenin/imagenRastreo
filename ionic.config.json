@@ -1,0 +1,7 @@
+{
+  "name": "imagenRastreo",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
